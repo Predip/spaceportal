@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'background.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>{% block title %}Space Travel{% endblock %}</title>
+</head>
+<body>
+<div class="afternoon">
+    <div class="backgroundContainer">
+        <div class="starfield"></div>
+        <div class="sun"></div>
+        <div class="atmosphere"></div>
+        <div class="spaceshipBody primaryShipColor">
+            <div class="tailFin"></div>
+            <div class="fuelContainer"></div>
+            <div class="noseCone primaryShipColor"></div>
+            <div class="windShield"></div>
+            <i class="fa-battery-full fa door"></i>
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+            <div class="navLight flashing"></div>
+            <div class="windowContainer">
+                <div class="window left"></div>
+                <div class="window middle"></div>
+                <div class="window right "></div>
+            </div>
+            <div class="engineStack">
+                <div class="nozzle upper"></div>
+                <div class="nozzle lower"></div>
+            </div>
+        </div>
+        <div class="spaceElevator">
+            <div class="laserReceiver upper"></div>
+            <div class="receiverBox">
+                <div class="window"></div>
+                <i class="fa fa-battery-half"></i>
+                <div class="panelAxle">
+                    <div class="solarPanel left"></div>
+                    <div class="solarPanel right"></div>
+                </div>
+            </div>
+            <div class="laserReceiver"></div>
+            <div class="tether">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="side-container">
+        <nav class="sidebar" id="sideNavi">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'space_info' %}">Space Info</a>
+            <a href="{% url 'asteroids_explorer' %}">Asteroids</a>
+            <a href="{% url 'weather' %}">Space Weather</a>
+            <a href="{% url 'news' %}">Space News</a>
+            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+                <i class="fa fa-bars"></i>
+            </a>
+        </nav>
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+</body>
+<script src="{% static 'background.js' %}"></script>
+<script>
+function myFunction() {
+  var x = document.getElementById("sideNavi");
+  if (x.className === "sidebar") {
+    x.className += " responsive";
+  } else {
+    x.className = "sidebar";
+  }
+}
+</script>
+</html>
