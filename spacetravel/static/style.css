@@ -10,8 +10,6 @@ body {
 #content {
     max-width: 50%;
     margin: 0 auto;
-    /*background-color: #111;  // Dark gray content background*/
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);  // White shadow
 }
 
 h1 {
@@ -38,6 +36,13 @@ h1 {
 
 .sidebar .icon {
   display: none;
+}
+
+/* Scene */
+#sceneContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
 }
 
 @media screen and (max-width: 900px) {

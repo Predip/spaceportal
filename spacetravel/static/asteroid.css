@@ -1,0 +1,35 @@
+.orbit {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border: 1px solid #fff;
+  border-radius: 50%;
+}
+
+.earth,
+.asteroid {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #3498db;
+}
+
+.earth {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.asteroid {
+  animation: orbit 5s linear infinite;
+}
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateX(150px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(150px) rotate(-360deg);
+  }
+}

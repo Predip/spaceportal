@@ -7,7 +7,6 @@ pip install -r requirements.txt
 
 Deploy
 ```bash
-python manage.py collectstatic
 # Set up the database
 python manage.py makemigrations
 python manage.py migrate
