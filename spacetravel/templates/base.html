@@ -52,18 +52,16 @@
     </div>
 </div>
 <div class="container">
-    <div class="side-container">
-        <nav class="sidebar" id="sideNavi">
-            <a href="{% url 'home' %}">Home</a>
-            <a href="{% url 'space_info' %}">Space Info</a>
-            <a href="{% url 'asteroids_explorer' %}">Asteroids</a>
-            <a href="{% url 'weather' %}">Space Weather</a>
-            <a href="{% url 'news' %}">Space News</a>
-            <a href="javascript:void(0);" class="icon" onclick="myFunction()">
-                <i class="fa fa-bars"></i>
-            </a>
-        </nav>
-    </div>
+    <nav class="sidebar" id="sideNavi">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'space_info' %}">Space Info</a>
+        <a href="{% url 'asteroids_explorer' %}">Asteroids</a>
+        <a href="{% url 'weather' %}">Space Weather</a>
+        <a href="{% url 'news' %}">Space News</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+            <i class="fa fa-bars"></i>
+        </a>
+    </nav>
 
     <div id="content">
         {% block content %}{% endblock %}
