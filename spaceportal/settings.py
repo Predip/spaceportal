@@ -24,7 +24,7 @@ SECRET_KEY = 'django-insecure-5478g3##4cik+3^3^b-n6p3%0$r7bps@-@)4giymh*-*$9wh!$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['44.218.201.166']
+ALLOWED_HOSTS = ['127.0.0.1', '44.218.201.166']
 
 # Application definition
 
@@ -75,8 +75,26 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    },
+    # 'neo': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': BASE_DIR / 'db.postgresql',
+    #     'USER': 'databaseneo',
+    #     'PASSWORD': '987654321',
+    #     'HOST': 'databaseneo.cbwyqeyca4nh.us-east-1.rds.amazonaws.com',
+    #     'PORT': 5432,
+    # }
+    # 'news': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': BASE_DIR / 'db.postgresql',
+    #     'USER': 'databasenews',
+    #     'PASSWORD': '987654321',
+    #     'HOST': 'databaseneo.cbwyqeyca4nh.us-east-1.rds.amazonaws.com',
+    #     'PORT': 5432,
+    # }
 }
+
+DATABASE_ROUTERS = ['spacetravel.routers.NewsRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

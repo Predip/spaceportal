@@ -16,4 +16,7 @@ python manage.py collectstatic
 
 # Start the application (development mode)
 python manage.py runserver # default port 8000
+
+# Use in AWS to start the application (run in backgroun)
+nohup python3 manage.py runserver 0.0.0.0:8000
 ```
