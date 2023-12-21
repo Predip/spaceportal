@@ -1,3 +1,4 @@
+from .models import News
 from django.shortcuts import render
 
 
@@ -18,4 +19,5 @@ def weather(request):
 
 
 def news_collection(request):
-    return render(request, 'news.html')
+    news_data = News.objects.using('news').all()
+    return render(request, 'news.html', {'news_data': news_data})
