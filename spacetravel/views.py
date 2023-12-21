@@ -1,3 +1,4 @@
+from .functions.wordcloud_generator import WordCloudGenerator
 from .models import News
 from django.shortcuts import render
 
@@ -20,4 +21,11 @@ def weather(request):
 
 def news_collection(request):
     news_data = News.objects.using('news').all()
+    news_data = WordCloudGenerator().process_news
     return render(request, 'news.html', {'news_data': news_data})
+
+
+def news_details(request, news_id):
+    news = News.objects.get(id=news_id)
+    return render(request, 'news/details.html', {'news': news})
+
