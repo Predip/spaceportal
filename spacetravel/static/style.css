@@ -49,9 +49,8 @@ h1 {
 /* Wordcloud */
 #wordcloud {
     background: white;
-    position: fixed;
-    width: 55%;
-    height: 100%;
+    width: 100%;
+    height: 400px;
     padding: 10px;
     opacity: 0.25;
     overflow: auto;
@@ -60,6 +59,88 @@ h1 {
 .word {
     cursor: pointer;
 }
+
+
+#tileContainer {
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tile {
+    position: relative;
+    display: inline-block;
+    border: 1px solid #ddd;
+    width: 47%;
+    margin-bottom: 10px;
+    padding: 5px;
+    text-align: center;
+    background-color: rgba(248,248,255,0.75);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.tile:hover {
+    transform: scale(1.05);
+}
+
+.tile img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+}
+
+.tile-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.tile-summary {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.tile-info {
+    font-size: 0.8em;
+    color: #888;
+    margin-bottom: 5px;
+}
+
+.tile-info p {
+    position: absolute;
+    top: 2px;
+    background-color: lightblue;
+    margin: 0 0 3px 0;
+    padding: 2px;
+    border-radius: 2px;
+}
+
+.tile-info p.tile-type {
+    left: 2px;
+}
+
+.tile-info p.tile-source {
+    top: 30px;
+    left: 2px;
+}
+
+.tile-info p.tile-date {
+    right: 2px;
+}
+
+.tile-info p.tile-sentiment {
+    top: 30px;
+    right: 2px;
+}
+
+.tile a {
+    text-decoration: none;
+}
+
 
 @media screen and (max-width: 900px) {
     .container {

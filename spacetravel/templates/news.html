@@ -4,28 +4,20 @@
 
 {% block content %}
     <h1>News</h1>
-    <svg id="wordcloud"></svg>
     <script>
-        console.log({{ news_data|safe }});
-        var wordData = {{ news_data|safe }};
-
-        // Set up the word cloud layout
-        var svg = d3.select("#wordcloud");
-        svg.selectAll("text")
-            .data(wordData)
-            .enter().append("text")
-            .attr("class", "word")
-            .attr("font-size", function (d) { return d.size + "px"; })
-            .attr("x", function () { return Math.random() * 800; }) // Random x position
-            .attr("y", function () { return Math.random() * 400; }) // Random y position
-            .text(function (d) { return d.text; })
-            .on("click", function (d) {
-                // Handle click event, e.g., redirect to article details page
-                //window.location.href = "/article/" + d.id + "/";
-                console.log("Id: "+ d.id);
-            });
+        var newsData = {{ news_data|default:"null"|safe }};
+        var wordData = {{ news_data_word|safe }};
     </script>
+    <svg id="wordcloud"></svg>
+
+    <!-- Tiles -->
+    <div id="tileContainer"></div>
+    <div>
+        <button onclick="prevPage()">Previous</button>
+        <button onclick="nextPage()">Next</button>
+    </div>
 {% endblock %}
 
 {% block scripBlock %}
+     <script src="../static/news.js"></script>
 {% endblock %}

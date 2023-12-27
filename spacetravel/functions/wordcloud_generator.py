@@ -14,15 +14,28 @@ class WordCloudGenerator:
     def __init__(self):
         pass
 
-    def process_news(self):
+    @staticmethod
+    def get_data():
         path = BASE_DIR / 'spacetravel' / 'static' / 'space-news-data-all-2023-12-19T14.json'
         try:
             with open(path, 'r') as file:
                 data = json.load(file)
-                return self.extract_text_from_json(data)
+                cleaned_data = []
+
+                for news_type, news_items in data.items():
+                    for item in news_items:
+                        item['type'] = news_type
+                        cleaned_data.append(item)
+
+                return cleaned_data
+
         except FileNotFoundError:
             print(f"Error: File not found at {path}")
             return []
+
+    def process_news(self):
+        data = self.get_data()
+        return json.dumps(data), self.extract_text_from_json(data)
 
     @staticmethod
     def extract_text_from_json(data):
@@ -37,7 +50,7 @@ class WordCloudGenerator:
         ]
 
         text = ' '.join(
-            (item.get('title', '') + ' ' + item.get('summary', '')) for items in data.values() for item in items
+            (item.get('title', '') + ' ' + item.get('summary', '')) for item in data
         )
 
         # Use regular expression to split the text into words
@@ -57,5 +70,4 @@ class WordCloudGenerator:
 
         # Sort the list based on word frequencies (size) in descending order
         words.sort(key=lambda x: x['size'], reverse=True)
-
         return words

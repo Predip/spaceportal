@@ -21,8 +21,8 @@ def weather(request):
 
 def news_collection(request):
     news_data = News.objects.using('news').all()
-    news_data = WordCloudGenerator().process_news
-    return render(request, 'news.html', {'news_data': news_data})
+    news_data, news_data_word = WordCloudGenerator().process_news()
+    return render(request, 'news.html', {'news_data': news_data, 'news_data_word': news_data_word})
 
 
 def news_details(request, news_id):
