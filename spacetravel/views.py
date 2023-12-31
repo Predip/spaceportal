@@ -1,5 +1,8 @@
+import json
+from .functions.asteroids.orbit_position import calculate_current_orbit
 from .functions.wordcloud_generator import WordCloudGenerator
-from .models import News
+from spacetravel.models.neo import FactSheet
+from spacetravel.models.news import News
 from django.shortcuts import render
 
 
@@ -12,7 +15,14 @@ def space_info(request):
 
 
 def asteroids_explorer(request):
-    return render(request, 'asteroids_explorer.html')
+    asteroids = FactSheet.objects.using('neo').all()
+
+    asteroids_data = [
+        {'name': asteroid.name, 'position': tuple(q.value for q in calculate_current_orbit(asteroid.asteroid_id))}
+        for asteroid in asteroids
+    ]
+
+    return render(request, 'asteroids_explorer.html', {'asteroids': json.dumps(asteroids_data)})
 
 
 def weather(request):

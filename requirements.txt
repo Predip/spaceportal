@@ -1,3 +1,7 @@
+astropy
 django
 nltk
+poliastro
+psycopg
+psycopg2
 stopwords

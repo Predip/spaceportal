@@ -4,7 +4,13 @@
 
 {% block content %}
     <h1>Asteroids explorer</h1>
-    <div id="sceneContainer"></div>
+    <div id="sceneContainer">
+        <script type="module">
+            import { importAsteroidModule } from '../static/asteroid.js';
+            var asteroidsData = {{ asteroids|default:"null"|safe }};
+            importAsteroidModule(asteroidsData);
+        </script>
+    </div>
 {% endblock %}
 
 {% block scripBlock %}

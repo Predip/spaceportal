@@ -76,14 +76,14 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     },
-    # 'neo': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': BASE_DIR / 'db.postgresql',
-    #     'USER': 'databaseneo',
-    #     'PASSWORD': '987654321',
-    #     'HOST': 'databaseneo.cbwyqeyca4nh.us-east-1.rds.amazonaws.com',
-    #     'PORT': 5432,
-    # }
+    'neo': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',  # '192.168.1.26',
+        'USER': 'postgres',
+        'PASSWORD': 'andrea',
+        'NAME': 'databaseneo',
+        'PORT': 5433,
+    }
     # 'news': {
     #     'ENGINE': 'django.db.backends.postgresql',
     #     'NAME': BASE_DIR / 'db.postgresql',

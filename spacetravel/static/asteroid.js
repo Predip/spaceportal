@@ -3,7 +3,6 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 // Constants
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const asteroidDistance = 5; // Distance from Earth
 
 // Set up scene
 const scene = new THREE.Scene();
@@ -20,13 +19,11 @@ const earthMaterial = new THREE.MeshBasicMaterial({ map: earthTexture });
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
 scene.add(earth);
 
-// Create Asteroid
-const asteroidGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+// Create Asteroid Style
 const asteroidTexture = new THREE.TextureLoader().load('../static/Comet_from_331_m.png');
 const asteroidMaterial = new THREE.MeshBasicMaterial({ map: asteroidTexture, transparent: true, opacity: 1, depthWrite: true });
-const asteroid = new THREE.Mesh(asteroidGeometry, asteroidMaterial);
-scene.add(asteroid);
-asteroid.position.set(asteroidDistance, 0, 0);
+const asteroidsMesh = [];
+let asteroids = null;
 
 
 // Animation
@@ -53,19 +50,60 @@ window.addEventListener('click', (event) => {
 
   raycaster.setFromCamera(mouse, camera);
 
-  // Calculate the point on the ray that is closest to the asteroid
-  const closestPoint = new THREE.Vector3();
-  raycaster.ray.closestPointToPoint(asteroid.position, closestPoint);
+  // Store the closest asteroid and its distance
+  let closestAsteroid = null;
+  let closestDistance = Infinity;
+  let closestAsteroidIndex = -1
 
-  // Check if the closest point is close to the asteroid's position
-  const distanceToAsteroid = closestPoint.distanceTo(asteroid.position);
+  asteroidsMesh.forEach((asteroid, index) => {
+    const closestPoint = new THREE.Vector3();
+    raycaster.ray.closestPointToPoint(asteroid.position, closestPoint);
 
-  if (distanceToAsteroid < asteroid.geometry.parameters.radius) {
-    // Display popup with asteroid information
-    const popupText = `Asteroid Information\nName: Asteroid 1\nDistance: ${asteroidDistance} km`;
+    // Calculate distance to the asteroid
+    const distanceToAsteroid = closestPoint.distanceTo(asteroid.position);
+
+    // Check if the distance is less than the asteroid's radius
+    if (distanceToAsteroid < asteroid.geometry.parameters.radius && distanceToAsteroid < closestDistance) {
+      closestAsteroid = asteroid;
+      closestAsteroidIndex = index;
+      closestDistance = distanceToAsteroid;
+    }
+  });
+
+  // If an asteroid is clicked, display its information
+  if (closestAsteroid) {
+    const popupText = `Asteroid Information\n
+    Name: ${asteroids[closestAsteroidIndex].name}\n
+    Distance: ${closestDistance.toFixed(2)*10000000} km`;
     alert(popupText);
   }
 });
+
+// Function to import data into the module
+export function importAsteroidModule(asteroidsData) {
+    asteroids = asteroidsData;
+    console.log('Asteroids data:', asteroids);
+
+    // For example, you can access specific fields
+    asteroids.forEach(asteroid => {
+        //console.log('Asteroid Name:', asteroidData.name);
+        // Add your logic here to work with the data and create asteroids
+        const newAsteroid = createAsteroid(asteroid);
+        asteroidsMesh.push(newAsteroid)
+        scene.add(newAsteroid);
+    });
+}
+
+// Function to create an asteroid
+function createAsteroid(asteroidData) {
+    //console.log(asteroidData)
+    const asteroidGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const asteroid = new THREE.Mesh(asteroidGeometry, asteroidMaterial.clone());
+    //const asteroidDistance = 5; // Distance from Earth
+    const position = asteroidData.position.map(coord => coord * 0.00000001)
+    asteroid.position.set(position[0], position[1], position[2]);
+    return asteroid;
+}
 
 // Start animation
 animate();
