@@ -4,15 +4,79 @@
 
 {% block content %}
     <h1>Asteroids explorer</h1>
+    <button id="openFilter" onclick="openFilter()">Open Filters</button>
+    <div id="filterFormContainer">
+        <form id="filterForm" method="get" action="{% url 'asteroids_explorer' %}" style="display: none;">
+            <section>
+                <label for="is_potentially_hazardous">Potentially Hazardous:</label>
+                <div class="switch">
+                    <input type="checkbox" name="is_potentially_hazardous" id="is_potentially_hazardous" value="true" />
+                    <span>
+                        <span>False</span>
+                        <span>True</span>
+                    </span>
+                    <a></a>
+                </div>
+            </section>
+
+            <section>
+                <label for="is_sentry_object">Sentry Object:</label>
+                <div class="switch">
+                    <input type="checkbox" name="is_sentry_object" id="is_sentry_object" value="true" />
+                    <span>
+                        <span>False</span>
+                        <span>True</span>
+                    </span>
+                    <a></a>
+                </div>
+            </section>
+
+            <!-- Add other filters as needed -->
+
+            <button type="submit" class="btn">Apply Filters</button>
+            <button type="button" class="btn cancel" onclick="closeFilter()">Close</button>
+        </form>
+    </div>
     <div id="sceneContainer">
         <script type="module">
             import { importAsteroidModule } from '../static/asteroid.js';
             var asteroidsData = {{ asteroids|default:"null"|safe }};
-            importAsteroidModule(asteroidsData);
+            var factor = {{ factor|default:10000000|safe }};
+            importAsteroidModule(asteroidsData, factor);
         </script>
     </div>
 {% endblock %}
 
 {% block scripBlock %}
+    <script>
+        function openFilter() {
+            document.getElementById("filterForm").style.display = "block";
+            document.getElementById("openFilter").style.display = "none";
+        }
+
+        function closeFilter() {
+            document.getElementById("filterForm").style.display = "none";
+            document.getElementById("openFilter").style.display = "block";
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the value of the "is_potentially_hazardous" parameter from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // isPotentiallyHazardous
+            if (urlParams.get('is_potentially_hazardous') === 'true') {
+                document.getElementById('is_potentially_hazardous').checked = true;
+            } else {
+                document.getElementById('is_potentially_hazardous').checked = false;
+            }
+
+            // isPotentiallyHazardous
+            if (urlParams.get('is_sentry_object') === 'true') {
+                document.getElementById('is_sentry_object').checked = true;
+            } else {
+                document.getElementById('is_sentry_object').checked = false;
+            }
+        });
+    </script>
     <script type="module" src="../static/asteroid.js"></script>
 {% endblock %}
