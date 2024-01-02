@@ -260,3 +260,4 @@ Temporary Items
 !.gitignore
 !.gitsubmodules
 /static
+*/migrations
