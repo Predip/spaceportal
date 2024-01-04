@@ -1,9 +1,9 @@
 import json
-from .functions.asteroids.orbit_position import calculate_current_orbit
+from .functions.asteroids.orbit_position import calculate_current_orbit, get_closest_approach
 from .functions.wordcloud_generator import WordCloudGenerator
-from spacetravel.models.neo import FactSheet
+from spacetravel.models.neo import Asteroid, FactSheet
 from spacetravel.models.news import News
-from django.db.models import Q
+from django.db.models import F, Q
 from django.shortcuts import render
 
 
@@ -17,8 +17,8 @@ def space_info(request):
 
 def asteroids_explorer(request):
     # Get filter parameters from the request
-    is_potentially_hazardous = request.GET.get('is_potentially_hazardous', False)
-    is_sentry_object = request.GET.get('is_sentry_object', False)
+    is_potentially_hazardous = request.GET.get('is_potentially_hazardous', 'false').lower() == 'true'
+    is_sentry_object = request.GET.get('is_sentry_object', 'false').lower() == 'true'
     diameter = request.GET.get('diameter', None)
     type_id = request.GET.get('type_id', None)
     magnitude = request.GET.get('magnitude', None)
@@ -27,12 +27,6 @@ def asteroids_explorer(request):
     month = request.GET.get('month', None)
     week = request.GET.get('week', None)
     day = request.GET.get('day', None)
-    hour = request.GET.get('hour', None)
-    minute = request.GET.get('minute', None)
-
-    # Convert string values to boolean
-    is_potentially_hazardous = is_potentially_hazardous.lower() == 'true' if is_potentially_hazardous else False
-    is_sentry_object = is_sentry_object.lower() == 'true' if is_sentry_object else False
 
     # Build the query based on the filter parameters
     filters = Q()
@@ -54,30 +48,39 @@ def asteroids_explorer(request):
         filters &= Q(time_id__week=week)
     if day is not None:
         filters &= Q(time_id__day=day)
-    if hour is not None:
-        filters &= Q(time_id__hour=hour)
-    if minute is not None:
-        filters &= Q(time_id__minute=minute)
 
-    asteroids = FactSheet.objects.using('neo').filter(filters)
+    asteroids = (
+        FactSheet.objects.using('neo')
+        .filter(filters)
+        .values('asteroid_id')  # Group by asteroid_id
+        .annotate(
+            name=F('asteroid_name'),
+            type_name=F('type_id__type_name'),
+            type_description=F('type_id__description'),
+        )
+        .distinct('asteroid_id')
+    )
 
-    # Calculate max and min distances
+    asteroids_data = []
     min_distance = float('inf')
 
     for asteroid in asteroids:
-        position = calculate_current_orbit(asteroid.asteroid_id)
-        distance = ((position[0] ** 2 + position[1] ** 2 + position[2] ** 2) ** 0.5).value
+        asteroid_obj = Asteroid.objects.using('neo').get(asteroid_id=asteroid['asteroid_id'])
+        asteroid['position'] = calculate_current_orbit(asteroid_obj)
+        distance_squared = sum(coord ** 2 for coord in asteroid['position'])
+        distance = (distance_squared ** 0.5).value
 
         if distance < min_distance:
             min_distance = distance
 
-    asteroids_data = [
-        {
-            'name': asteroid.name,
-            'position': tuple(q.value for q in calculate_current_orbit(asteroid.asteroid_id))
+        asteroid_data = {
+            'name': asteroid['name'],
+            'type': asteroid['type_name'],
+            'type_desc': asteroid['type_description'],
+            'position': tuple(q.value for q in asteroid['position']),
+            'close': get_closest_approach(asteroid_obj.asteroid_id)
         }
-        for asteroid in asteroids
-    ]
+        asteroids_data.append(asteroid_data)
 
     return render(request, 'asteroids_explorer.html', {'asteroids': json.dumps(asteroids_data),
                                                        'factor': min_distance

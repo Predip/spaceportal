@@ -87,7 +87,9 @@ window.addEventListener('click', (event) => {
     // If an asteroid is clicked, display its information
     if (closestAsteroid) {
       const popupText = `Asteroid Information\n
-        Name: ${asteroids[closestAsteroidIndex].name}\n
+        Name: ${asteroids[closestAsteroidIndex].name}
+        Type: ${asteroids[closestAsteroidIndex].type}
+        Next closest approach: ${asteroids[closestAsteroidIndex].close}
         Distance: ${closestDistance.toFixed(2)*factor} km`;
       alert(popupText);
     }

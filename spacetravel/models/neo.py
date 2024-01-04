@@ -11,16 +11,35 @@ class Time(models.Model):
     hour = models.IntegerField()
     minute = models.IntegerField()
 
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'dim_time'
+        app_label = 'spacetravel'
+
 
 class Magnitude(models.Model):
     magnitude_id = models.AutoField(primary_key=True)
     magnitude = models.DecimalField(max_digits=10, decimal_places=2)
 
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'dim_magnitude'
+        app_label = 'spacetravel'
+
 
 class Type(models.Model):
     type_id = models.AutoField(primary_key=True)
+    type_name = models.TextField()
     description = models.TextField()
     class_range = models.TextField()
+
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'dim_type'
+        app_label = 'spacetravel'
 
 
 class Diameter(models.Model):
@@ -30,15 +49,18 @@ class Diameter(models.Model):
     miles = models.DecimalField(max_digits=10, decimal_places=2)
     feet = models.DecimalField(max_digits=10, decimal_places=2)
 
+    objects = models.Manager()
+
+    class Meta:
+        db_table = 'dim_diameter'
+        app_label = 'spacetravel'
+
 
 class Asteroid(models.Model):
     asteroid_id = models.AutoField(primary_key=True)
-    name = models.TextField()
     is_potentially_hazardous = models.BooleanField()
     is_sentry_object = models.BooleanField()
     arc_in_days = models.IntegerField()
-    observations_used = models.IntegerField()
-    orbit_uncertainty = models.DecimalField(max_digits=10, decimal_places=2)
     minimum_orbit_intersection = models.DecimalField(max_digits=10, decimal_places=2)
     epoch_osculation = models.DecimalField(max_digits=10, decimal_places=2)
     eccentricity = models.DecimalField(max_digits=10, decimal_places=2)
@@ -48,15 +70,14 @@ class Asteroid(models.Model):
     orbital_period = models.DecimalField(max_digits=10, decimal_places=2)
     perihelion_distance = models.DecimalField(max_digits=10, decimal_places=2)
     perihelion_argument = models.DecimalField(max_digits=10, decimal_places=2)
-    aphelion_distance = models.DecimalField(max_digits=10, decimal_places=2)
-    perihelion_time = models.DecimalField(max_digits=10, decimal_places=2)
     mean_anomaly = models.DecimalField(max_digits=10, decimal_places=2)
     mean_motion = models.DecimalField(max_digits=10, decimal_places=2)
-    equinox = models.TextField()
     orbit_determination_date = models.DateTimeField()
 
+    objects = models.Manager()
+
     class Meta:
-        db_table = 'asteroid'
+        db_table = 'dim_asteroid_detail'
         app_label = 'spacetravel'
 
 
@@ -67,10 +88,10 @@ class FactSheet(models.Model):
     magnitude_id = models.ForeignKey(Magnitude, on_delete=models.CASCADE, db_column='magnitude_id')
     asteroid_id = models.ForeignKey(Asteroid, on_delete=models.CASCADE, db_column='asteroid_id')
     type_id = models.ForeignKey(Type, on_delete=models.CASCADE, db_column='type_id')
-    name = models.TextField()
+    asteroid_name = models.TextField()
 
     objects = models.Manager()
 
     class Meta:
-        db_table = 'fact_sheet'
+        db_table = 'fact_asteroid'
         app_label = 'spacetravel'
