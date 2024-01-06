@@ -81,7 +81,7 @@ DATABASES = {
         'HOST': 'localhost',  # '192.168.1.26',
         'USER': 'postgres',
         'PASSWORD': 'andrea',
-        'NAME': 'databaseneo',
+        'NAME': 'neo_db',
         'PORT': 5433,
     }
     # 'news': {

@@ -1,7 +1,7 @@
 from astropy.time import Time
 from poliastro.bodies import Earth
 from poliastro.twobody import Orbit
-from spacetravel.models.neo import FactSheet
+from spacetravel.models.neo import NeoSheet
 import astropy.units as u
 
 
@@ -49,7 +49,7 @@ def get_closets_time(asteroid_id):
                 SELECT * FROM ranked_asteroids WHERE rank = 1;
                 '''
 
-    raw_results = FactSheet.objects.using('neo').raw(time_filter_query)
+    raw_results = NeoSheet.objects.using('neo').raw(time_filter_query)
     if len(raw_results) > 0:
         temp_timestamp = Time(raw_results[0].temp_timestamp)
     else:
@@ -69,7 +69,7 @@ def get_closest_approach(asteroid_id):
         t.hour, t.minute, 0) > NOW() ) 
     SELECT * FROM ranked_asteroids WHERE rank = 1;'''
 
-    raw_results = FactSheet.objects.using('neo').raw(time_filter_query)
+    raw_results = NeoSheet.objects.using('neo').raw(time_filter_query)
     if len(raw_results) > 0:
         temp_timestamp = str(Time(raw_results[0].temp_timestamp))
     else:

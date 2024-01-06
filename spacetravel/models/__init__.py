@@ -1,3 +1,3 @@
 # models/__init__.py
-from .neo import Time, Magnitude, Type, Diameter, Asteroid, FactSheet
+from .neo import NeoTime, Magnitude, Type, Diameter, Asteroid, NeoSheet
 from .news import News

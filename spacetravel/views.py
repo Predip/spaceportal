@@ -1,7 +1,7 @@
 import json
 from .functions.asteroids.orbit_position import calculate_current_orbit, get_closest_approach
 from .functions.wordcloud_generator import WordCloudGenerator
-from spacetravel.models.neo import Asteroid, FactSheet
+from spacetravel.models.neo import Asteroid, NeoSheet
 from spacetravel.models.news import News
 from django.db.models import F, Q
 from django.shortcuts import render
@@ -50,7 +50,7 @@ def asteroids_explorer(request):
         filters &= Q(time_id__day=day)
 
     asteroids = (
-        FactSheet.objects.using('neo')
+        NeoSheet.objects.using('neo')
         .filter(filters)
         .values('asteroid_id')  # Group by asteroid_id
         .annotate(

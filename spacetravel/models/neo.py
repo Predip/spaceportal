@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Time(models.Model):
+class NeoTime(models.Model):
     time_id = models.AutoField(primary_key=True)
     year = models.IntegerField()
     quarter = models.IntegerField()
@@ -81,9 +81,9 @@ class Asteroid(models.Model):
         app_label = 'spacetravel'
 
 
-class FactSheet(models.Model):
+class NeoSheet(models.Model):
     fact_sheet_id = models.AutoField(primary_key=True)
-    time_id = models.ForeignKey(Time, on_delete=models.CASCADE, db_column='time_id')
+    time_id = models.ForeignKey(NeoTime, on_delete=models.CASCADE, db_column='time_id')
     diameter_id = models.ForeignKey(Diameter, on_delete=models.CASCADE, db_column='diameter_id')
     magnitude_id = models.ForeignKey(Magnitude, on_delete=models.CASCADE, db_column='magnitude_id')
     asteroid_id = models.ForeignKey(Asteroid, on_delete=models.CASCADE, db_column='asteroid_id')
