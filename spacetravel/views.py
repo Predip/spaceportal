@@ -1,7 +1,7 @@
 import json
 from .functions.asteroids.orbit_position import calculate_current_orbit, get_closest_approach
 from .functions.wordcloud_generator import WordCloudGenerator
-from spacetravel.models.neo import Asteroid, NeoSheet
+from spacetravel.models import Asteroid, NeoSheet, WeatherSheet
 from spacetravel.models.news import News
 from django.db.models import F, Q
 from django.shortcuts import render
@@ -87,8 +87,32 @@ def asteroids_explorer(request):
                                                        })
 
 
-def weather(request):
-    return render(request, 'weather.html')
+def weather_info(request):
+    # Assuming you have a FactSheet model with space weather data
+    weather_dataset = WeatherSheet.objects.using('weather').all()
+    unique_times = set()
+    solar_wind_mag_data = []
+
+    for weather in weather_dataset:
+        time = str(weather.time.year) + '-' + str(weather.time.month).zfill(2) + '-' + str(weather.time.day).zfill(2) \
+               + 'T' + str(weather.time.hour) + ':' + str(weather.time.minute)
+
+        if time not in unique_times and not weather.mag.bx_gsm.is_nan():
+            solar_wind_mag_data.append({
+                'time': time,
+                'bx_gsm': float(weather.mag.bx_gsm),
+                'by_gsm': float(weather.mag.by_gsm),
+                'bz_gsm': float(weather.mag.bz_gsm),
+            })
+            unique_times.add(time)
+
+    # Assuming 'space_weather' is a DataFrame obtained from the space_weather module
+    # future_predictions = forecasting.forecast_solar_wind(space_weather_data)
+
+    return render(request, 'weather.html', {
+        'solar_wind_mag': json.dumps(solar_wind_mag_data),
+        # 'future_predictions': future_predictions,
+    })
 
 
 def news_collection(request):

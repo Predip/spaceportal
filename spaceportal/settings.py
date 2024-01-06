@@ -83,6 +83,14 @@ DATABASES = {
         'PASSWORD': 'andrea',
         'NAME': 'neo_db',
         'PORT': 5433,
+    },
+    'weather': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',  # '192.168.1.26',
+        'USER': 'postgres',
+        'PASSWORD': 'andrea',
+        'NAME': 'weather_db',
+        'PORT': 5433,
     }
     # 'news': {
     #     'ENGINE': 'django.db.backends.postgresql',

@@ -1,0 +1,129 @@
+<div style="background-color:wheat">
+    <form id="dateFilterForm">
+        <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate">
+
+        <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate">
+
+        <button type="button" onclick="updateChart()">Apply Filter</button>
+    </form>
+    <!-- Initialize a select button -->
+    <select id="selectButton"></select>
+    <div id="magneticFieldChart"></div>
+    <svg id="demo2" width="200" height="200"></svg>
+</div>
+
+<script>
+    var solarWindMagData = {{ solar_wind_mag | safe }};
+    //var solarWindMagData = [
+    //    {time: "2024-01-04T15:44", bx_gsm: -0.7},
+    //    {time: "2024-01-04T15:45", bx_gsm: 0.1},
+    //    {time: "2024-01-04T15:46", bx_gsm: 0.23},
+    //    {time: "2024-01-04T15:47", bx_gsm: -0.05},
+    //    {time: "2024-01-04T15:48", bx_gsm: -0.13},
+    //    {time: "2024-01-04T15:49", bx_gsm: -0.23}
+    //]
+    console.log(solarWindMagData);
+
+    var allKeys = Object.keys(solarWindMagData[0]).filter(key => key !== 'time');
+    console.log(allKeys);
+
+    var parseTime = d3.timeParse("%Y-%m-%dT%H:%M");
+
+    solarWindMagData.forEach(function (d) {
+        d.time = parseTime(d.time);
+    });
+
+    const margin = {top: 10, right: 100, bottom: 30, left: 50},
+        width = 460 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
+
+    var svg = d3.select("#magneticFieldChart")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+     	.data(allKeys)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; })
+
+    const myColor = d3.scaleOrdinal()
+      .domain(allKeys)
+      .range(d3.schemeSet2);
+
+    // Append x-axis
+    var xScale = d3.scaleTime()
+        .domain(d3.extent(solarWindMagData, d => d.time))
+        .range([0, 500]);
+
+    const xAxis = svg.append("g")
+        .attr("transform", "translate(0, " + (300) + ")")
+        .call(d3.axisBottom(xScale));
+
+    const xAxisTitle = svg.append("text")
+        .attr("x", (width/2))
+        .attr("y", height - margin.bottom*2)
+        .attr("dy", "2.5em")
+        .style("text-anchor", "end")
+        .text("Time");
+
+    // Append y-axis
+    var yScale = d3.scaleLinear()
+        .domain(d3.extent(solarWindMagData, d => d.bx_gsm))
+        .range([300, 0]);
+
+    const yAxis = svg.append("g")
+        .call(d3.axisLeft(yScale));
+
+    const yAxisTitle = svg.append("text")
+        .style("text-anchor", "end")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -margin.top*6)
+        .attr("y", -margin.left + 10)
+        .attr("dy", "0.71em")
+        .text("Magnetic Field (bx_gsm)");
+
+    const line = svg.append("g")
+      .append("path")
+      .datum(solarWindMagData)
+      .attr("d", d3.line()
+          .x((d) => xScale(d.time))
+          .y((d) => yScale(d.bx_gsm)))
+      .attr("stroke", (d) => myColor("bx_gsm"))
+      .style("stroke-width", 4)
+      .style("fill", "none");
+
+    function update(selectedGroup) {
+      const dataFilter = solarWindMagData.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+      // Give these new data to update line
+      console.log(dataFilter)
+
+      yScale = d3.scaleLinear()
+            .domain(d3.extent(dataFilter, d => d.value))
+            .range([300, 0]);
+
+      yAxis.call(d3.axisLeft(yScale));
+      yAxisTitle.text("Magnetic Field (" + selectedGroup + ")");
+
+      line
+          .datum(dataFilter)
+          .transition()
+          .duration(1000)
+          .attr("d", d3.line()
+              .x((d) => xScale(+d.time))
+              .y((d) => yScale(+d.value)))
+          .attr("stroke", (d) => myColor(selectedGroup))
+    }
+
+    d3.select("#selectButton").on("change", function(event,d) {
+        const selectedOption = d3.select(this).property("value")
+        update(selectedOption)
+    })
+</script>
