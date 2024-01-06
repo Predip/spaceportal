@@ -2,7 +2,6 @@ import json
 from .functions.asteroids.orbit_position import calculate_current_orbit, get_closest_approach
 from .functions.wordcloud_generator import WordCloudGenerator
 from spacetravel.models import Asteroid, NeoSheet, WeatherSheet
-from spacetravel.models.news import News
 from django.db.models import F, Q
 from django.shortcuts import render
 
@@ -116,11 +115,6 @@ def weather_info(request):
 
 
 def news_collection(request):
-    news_data = News.objects.using('news').all()
     news_data, news_data_word = WordCloudGenerator().process_news()
     return render(request, 'news.html', {'news_data': news_data, 'news_data_word': news_data_word})
 
-
-def news_details(request, news_id):
-    news = News.objects.get(id=news_id)
-    return render(request, 'news/details.html', {'news': news})

@@ -7,5 +7,4 @@ urlpatterns = [
     path('asteroids/', views.asteroids_explorer, name='asteroids_explorer'),
     path('weather/', views.weather_info, name='weather'),
     path('news/', views.news_collection, name='news'),
-    path('details/<int:details_id>/', views.news_details, name='news_details'),
 ]
