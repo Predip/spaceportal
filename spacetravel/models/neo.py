@@ -1,21 +1,5 @@
 from django.db import models
-
-
-class NeoTime(models.Model):
-    time_id = models.AutoField(primary_key=True)
-    year = models.IntegerField()
-    quarter = models.IntegerField()
-    month = models.IntegerField()
-    week = models.IntegerField()
-    day = models.IntegerField()
-    hour = models.IntegerField()
-    minute = models.IntegerField()
-
-    objects = models.Manager()
-
-    class Meta:
-        db_table = 'dim_time'
-        app_label = 'spacetravel'
+from spacetravel.models.common import TimeModel
 
 
 class Magnitude(models.Model):
@@ -83,7 +67,7 @@ class Asteroid(models.Model):
 
 class NeoSheet(models.Model):
     fact_sheet_id = models.AutoField(primary_key=True)
-    time_id = models.ForeignKey(NeoTime, on_delete=models.CASCADE, db_column='time_id')
+    time_id = models.ForeignKey(TimeModel, on_delete=models.CASCADE, db_column='time_id')
     diameter_id = models.ForeignKey(Diameter, on_delete=models.CASCADE, db_column='diameter_id')
     magnitude_id = models.ForeignKey(Magnitude, on_delete=models.CASCADE, db_column='magnitude_id')
     asteroid_id = models.ForeignKey(Asteroid, on_delete=models.CASCADE, db_column='asteroid_id')

@@ -1,21 +1,5 @@
 from django.db import models
-
-
-class WeatherTime(models.Model):
-    time_id = models.AutoField(primary_key=True)
-    year = models.IntegerField()
-    quarter = models.IntegerField()
-    month = models.IntegerField()
-    week = models.IntegerField()
-    day = models.IntegerField()
-    hour = models.IntegerField()
-    minute = models.IntegerField()
-
-    objects = models.Manager()
-
-    class Meta:
-        db_table = 'dim_time'
-        app_label = 'spacetravel'
+from spacetravel.models.common import TimeModel
 
 
 class Plasma(models.Model):
@@ -72,7 +56,7 @@ class Proton(models.Model):
 class WeatherSheet(models.Model):
     fact_sheet_id = models.AutoField(primary_key=True)
     plasma = models.ForeignKey(Plasma, on_delete=models.CASCADE)
-    time = models.ForeignKey(WeatherTime, on_delete=models.CASCADE)
+    time = models.ForeignKey(TimeModel, on_delete=models.CASCADE)
     magnetometer = models.ForeignKey(Magnetometer, on_delete=models.CASCADE)
     mag = models.ForeignKey(Mag, on_delete=models.CASCADE)
     proton = models.ForeignKey(Proton, on_delete=models.CASCADE)
