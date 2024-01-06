@@ -1,4 +1,4 @@
-class NewsRouter:
+class SpaceTravelRouter:
     """
     A router to control database operations for the News model.
     """

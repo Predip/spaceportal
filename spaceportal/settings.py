@@ -84,6 +84,14 @@ DATABASES = {
         'NAME': 'neo_db',
         'PORT': 5433,
     },
+    'news': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'HOST': 'localhost',  # '192.168.1.26',
+         'NAME': 'news_db',
+         'USER': 'postgres',
+         'PASSWORD': 'andrea',
+         'PORT': 5432,
+     },
     'weather': {
         'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'localhost',  # '192.168.1.26',
@@ -92,17 +100,9 @@ DATABASES = {
         'NAME': 'weather_db',
         'PORT': 5433,
     }
-    # 'news': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': BASE_DIR / 'db.postgresql',
-    #     'USER': 'databasenews',
-    #     'PASSWORD': '987654321',
-    #     'HOST': 'databaseneo.cbwyqeyca4nh.us-east-1.rds.amazonaws.com',
-    #     'PORT': 5432,
-    # }
 }
 
-DATABASE_ROUTERS = ['spacetravel.routers.NewsRouter']
+DATABASE_ROUTERS = ['spacetravel.routers.SpaceTravelRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

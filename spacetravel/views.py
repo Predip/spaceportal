@@ -1,7 +1,8 @@
 import json
-from .functions.asteroids.orbit_position import calculate_current_orbit, get_closest_approach
-from .functions.wordcloud_generator import WordCloudGenerator
-from spacetravel.models import Asteroid, NeoSheet, WeatherSheet
+from .functions.neo.orbit_position import calculate_current_orbit, get_closest_approach
+from .functions.news.wordcloud_generator import WordCloudGenerator
+# from .functions.weather import forecasting
+from .models import Asteroid, NeoSheet, WeatherSheet
 from django.db.models import F, Q
 from django.shortcuts import render
 
@@ -105,7 +106,6 @@ def weather_info(request):
             })
             unique_times.add(time)
 
-    # Assuming 'space_weather' is a DataFrame obtained from the space_weather module
     # future_predictions = forecasting.forecast_solar_wind(space_weather_data)
 
     return render(request, 'weather.html', {
