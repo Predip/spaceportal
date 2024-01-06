@@ -19,30 +19,30 @@
     var allKeys = Object.keys(solarWindMagData[0]).filter(key => key !== 'time');
     var parseTime = d3.timeParse("%Y-%m-%dT%H:%M");
 
-    solarWindMagData.forEach(function (d) {
-        d.time = parseTime(d.time);
+    solarWindMagData.forEach(function(d) {
+      d.time = parseTime(d.time);
     });
 
-    var dataFilter = solarWindMagData.map(function(d){return {time: d.time, value:d["bx_gsm"]} })
+    var dataFilter = solarWindMagData.map(d => ({ time: d.time, value: d["bx_gsm"] }));
 
     const margin = {top: 10, right: 100, bottom: 30, left: 50},
-        width = 460 - margin.left - margin.right,
-        height = 400 - margin.top - margin.bottom;
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
 
     var svg = d3.select("#magneticFieldChart")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
     d3.select("#selectButton")
       .selectAll('myOptions')
-     	.data(allKeys)
+      .data(allKeys)
       .enter()
-    	.append('option')
-      .text(function (d) { return d; }) // text showed in the menu
-      .attr("value", function (d) { return d; })
+      .append('option')
+      .text((d) => d) // text showed in the menu
+      .attr("value", (d) => d);
 
     const myColor = d3.scaleOrdinal()
       .domain(allKeys)
@@ -50,59 +50,59 @@
 
     // Add a clipPath: everything out of this area won't be drawn.
     const clip = svg.append("defs").append("svg:clipPath")
-        .attr("id", "clip")
-        .append("svg:rect")
-        .attr("width", width )
-        .attr("height", height )
-        .attr("x", 0)
-        .attr("y", 0);
+      .attr("id", "clip")
+      .append("svg:rect")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("x", 0)
+      .attr("y", 0);
 
     // Add brushing
     var brush = d3.brushX()
-        .extent( [ [0,0], [width,height] ] )
-        .on("end", zoomGraph)
+      .extent([[0, 0], [width, height]])
+      .on("end", zoomGraph);
 
     // Append x-axis
     var xScale = d3.scaleTime()
-        .domain(d3.extent(dataFilter, d => d.time))
-        .range([0, 500]);
+      .domain(d3.extent(dataFilter, d => d.time))
+      .range([0, 500]);
 
     const xAxis = svg.append("g")
-        .attr("transform", "translate(0, " + (300) + ")")
-        .call(d3.axisBottom(xScale));
+      .attr("transform", "translate(0, " + (300) + ")")
+      .call(d3.axisBottom(xScale));
 
     const xAxisTitle = svg.append("text")
-        .attr("x", (width/2))
-        .attr("y", height - margin.bottom*2)
-        .attr("dy", "2.5em")
-        .style("text-anchor", "end")
-        .text("Time");
+      .attr("x", (width / 2))
+      .attr("y", height - margin.bottom * 2)
+      .attr("dy", "2.5em")
+      .style("text-anchor", "end")
+      .text("Time");
 
     // Append y-axis
     var yScale = d3.scaleLinear()
-        .domain(d3.extent(dataFilter, d => d.value))
-        .range([300, 0]);
+      .domain(d3.extent(dataFilter, d => d.value))
+      .range([300, 0]);
 
     const yAxis = svg.append("g")
-        .call(d3.axisLeft(yScale));
+      .call(d3.axisLeft(yScale));
 
     const yAxisTitle = svg.append("text")
-        .style("text-anchor", "end")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -margin.top*6)
-        .attr("y", -margin.left + 10)
-        .attr("dy", "0.71em")
-        .text("Magnetic Field (bx_gsm)");
+      .style("text-anchor", "end")
+      .attr("transform", "rotate(-90)")
+      .attr("x", -margin.top * 6)
+      .attr("y", -margin.left + 10)
+      .attr("dy", "0.71em")
+      .text("Magnetic Field (bx_gsm)");
 
     const line = svg.append("g")
-        .attr("clip-path", "url(#clip)")
+      .attr("clip-path", "url(#clip)")
 
     line.append("path")
       .datum(dataFilter)
       .attr("class", "line")
       .attr("d", d3.line()
-          .x((d) => xScale(d.time))
-          .y((d) => yScale(d.value)))
+        .x((d) => xScale(d.time))
+        .y((d) => yScale(d.value)))
       .attr("stroke", (d) => myColor("bx_gsm"))
       .style("stroke-width", 4)
       .style("fill", "none");
@@ -110,40 +110,43 @@
     // Add the brushing
     line
       .append("g")
-        .attr("class", "brush")
-        .call(brush);
+      .attr("class", "brush")
+      .call(brush);
 
     // A function that set idleTimeOut to null
     let idleTimeout
-    function idled() { idleTimeout = null; }
+
+    function idled() {
+      idleTimeout = null;
+    }
 
     // A function that update the chart for given boundaries
-    function zoomGraph(event,d) {
+    function zoomGraph(event, d) {
       // What are the selected boundaries?
       extent = event.selection
 
       // If no selection, back to initial coordinate. Otherwise, update X axis domain
-      if(!extent){
+      if (!extent) {
         if (!idleTimeout) return idleTimeout = setTimeout(idled, 350);
         xScale.domain(d3.extent(dataFilter, d => d.time));
-      }else {
-        xScale.domain([ xScale.invert(extent[0]), xScale.invert(extent[1]) ])
+      } else {
+        xScale.domain([xScale.invert(extent[0]), xScale.invert(extent[1])])
         line.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
       }
 
       // Update axis and line position
       xAxis.transition().duration(1000).call(d3.axisBottom(xScale))
       line.select('.line')
-          .transition()
-          .duration(1000)
-          .attr("d", d3.line()
-            .x((d) => xScale(d.time))
-            .y((d) => yScale(d.value))
-          )
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+          .x((d) => xScale(d.time))
+          .y((d) => yScale(d.value))
+        )
     }
 
     // If user double click, reinitialize the chart
-    svg.on("dblclick",function(){
+    svg.on("dblclick", function() {
       xScale.domain(d3.extent(dataFilter, (d) => d.time))
       xAxis.transition().call(d3.axisBottom(xScale))
       line
@@ -152,12 +155,17 @@
         .attr("d", d3.line()
           .x((d) => xScale(d.time))
           .y((d) => yScale(d.value))
-      )
+        )
     });
 
 
     function changeGraph(selectedGroup) {
-      dataFilter = solarWindMagData.map(function(d){return {time: d.time, value:d[selectedGroup]} })
+      dataFilter = solarWindMagData.map(function(d) {
+        return {
+          time: d.time,
+          value: d[selectedGroup]
+        }
+      })
 
       // Give these new data to update line
       yScale.domain(d3.extent(dataFilter, d => d.value));
@@ -165,17 +173,17 @@
       yAxisTitle.text("Magnetic Field (" + selectedGroup + ")");
 
       line.select(".line")
-          .datum(dataFilter)
-          .transition()
-          .duration(1000)
-          .attr("d", d3.line()
-              .x((d) => xScale(+d.time))
-              .y((d) => yScale(+d.value)))
-          .attr("stroke", (d) => myColor(selectedGroup))
+        .datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d", d3.line()
+          .x((d) => xScale(+d.time))
+          .y((d) => yScale(+d.value)))
+        .attr("stroke", (d) => myColor(selectedGroup))
     }
 
-    d3.select("#selectButton").on("change", function(event,d) {
-        const selectedOption = d3.select(this).property("value")
-        changeGraph(selectedOption)
+    d3.select("#selectButton").on("change", function(event, d) {
+      const selectedOption = d3.select(this).property("value")
+      changeGraph(selectedOption)
     })
 </script>
