@@ -29,7 +29,6 @@ ALLOWED_HOSTS = ['127.0.0.1', '44.218.201.166']
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -81,20 +80,26 @@ DATABASES = {
         'HOST': 'localhost',  # '192.168.1.26',
         'USER': 'postgres',
         'PASSWORD': 'andrea',
-        'NAME': 'databaseneo',
+        'NAME': 'neo_db',
+        'PORT': 5433,
+    },
+    'news': {
+         'ENGINE': 'django.db.backends.postgresql',
+         'HOST': 'localhost',  # '192.168.1.26',
+         'NAME': 'news_db',
+         'USER': 'postgres',
+         'PASSWORD': 'andrea',
+         'PORT': 5432,
+     },
+    'weather': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': 'localhost',  # '192.168.1.26',
+        'USER': 'postgres',
+        'PASSWORD': 'andrea',
+        'NAME': 'weather_db',
         'PORT': 5433,
     }
-    # 'news': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': BASE_DIR / 'db.postgresql',
-    #     'USER': 'databasenews',
-    #     'PASSWORD': '987654321',
-    #     'HOST': 'databaseneo.cbwyqeyca4nh.us-east-1.rds.amazonaws.com',
-    #     'PORT': 5432,
-    # }
 }
-
-DATABASE_ROUTERS = ['spacetravel.routers.NewsRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -118,11 +123,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)

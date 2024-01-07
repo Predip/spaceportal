@@ -16,8 +16,6 @@ svg.selectAll("text")
     });
 
 
-// Tiles
-var itemsPerPage = 10; // Adjust the number of items per page as needed
 var currentPage = 1;
 
 function makeTiles(item) {
@@ -27,20 +25,20 @@ function makeTiles(item) {
     var tileDiv = document.createElement("div");
     tileDiv.classList.add("tile");
 
-    let d = new Date(item.published_at);
+    let d = new Date(item.time);
     let date = d.toDateString();
 
     // Populate the tile content
     tileDiv.innerHTML += `
         <a href="${item.url}" target="_blank">
-            <img src="${item.image_url}" alt=${item.title} class="tile-image">
+            <img src="${item.img_url}" alt="${item.title}" class="tile-image">
             <h3 class="tile-title">${item.title}</h3>
             <p class="tile-summary">${item.summary}</p>
             <div class="tile-info">
-                <p class="tile-type">${item.type}</p>
+                <p class="tile-type">${item.category}</p>
                 <p class="tile-source">${item.news_site}</p>
                 <p class="tile-date">${date}</p>
-                <p class="tile-sentiment">${item.id}</p>
+                <p class="tile-sentiment">${item.sentiment}</p>
             </div>
         </a>
     `;
@@ -49,26 +47,9 @@ function makeTiles(item) {
 }
 
 function renderPage(page) {
-    var startIndex = (page - 1) * itemsPerPage;
-    var endIndex = startIndex + itemsPerPage;
-    var currentItems = newsData.slice(startIndex, endIndex);
-
     var tileContainer = document.getElementById("tileContainer");
     tileContainer.innerHTML = "";
-
-    currentItems.forEach(makeTiles);
-}
-
-function nextPage() {
-    currentPage++;
-    renderPage(currentPage);
-}
-
-function prevPage() {
-    if (currentPage > 1) {
-        currentPage--;
-        renderPage(currentPage);
-    }
+    newsData.forEach(makeTiles);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
