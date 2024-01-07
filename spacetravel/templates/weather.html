@@ -5,6 +5,13 @@
 {% block content %}
     <h1>Space Weather</h1>
 
+    <script>
+        const margin = {top: 10, right: 100, bottom: 30, left: 50},
+            width = 460 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+        const parseTime = d3.timeParse("%Y-%m-%dT%H:%M");
+    </script>
+
     <div class="weather">
         <h2>Solar Wind Magnetic Field</h2>
         {% include 'solar_wind_magnetic_field_chart.html' %}
@@ -13,6 +20,16 @@
     <div class="weather">
         <h2>Solar Wind Plasma</h2>
         {% include 'solar_wind_plasma_chart.html' %}
+    </div>
+
+    <div class="weather">
+        <h2>Magnetometer Data</h2>
+        {% include 'magnetometer_chart.html' %}
+    </div>
+
+    <div class="weather">
+        <h2>Protons Data</h2>
+        {% include 'protons_chart.html' %}
     </div>
 {% endblock %}
 

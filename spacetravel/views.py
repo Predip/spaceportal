@@ -89,28 +89,75 @@ def asteroids_explorer(request):
 
 
 def weather_info(request):
-    # Assuming you have a FactSheet model with space weather data
     weather_dataset = WeatherSheet.objects.using('weather').all()
     unique_times = set()
-    solar_wind_mag_data = []
+    mag_data = []
+    plasma = []
+    magnetometer = []
+    proton = []
 
     for weather in weather_dataset:
         time = str(weather.time.year) + '-' + str(weather.time.month).zfill(2) + '-' + str(weather.time.day).zfill(2) \
                + 'T' + str(weather.time.hour) + ':' + str(weather.time.minute)
 
         if time not in unique_times and not weather.mag.bx_gsm.is_nan():
-            solar_wind_mag_data.append({
+            mag_data.append({
                 'time': time,
                 'bx_gsm': float(weather.mag.bx_gsm),
                 'by_gsm': float(weather.mag.by_gsm),
                 'bz_gsm': float(weather.mag.bz_gsm),
             })
+
+            if time not in unique_times and not weather.plasma.density.is_nan():
+                plasma.append({
+                    'time': time,
+                    'density': float(weather.plasma.density),
+                    'speed': float(weather.plasma.speed),
+                })
+
+            if time not in unique_times and not weather.magnetometer.he.is_nan():
+                magnetometer.append({
+                    'time': time,
+                    'he': float(weather.magnetometer.he),
+                    'hp': float(weather.magnetometer.hp),
+                    'hn': float(weather.magnetometer.hn),
+                    'total': float(weather.magnetometer.total),
+                })
+
+            if time not in unique_times and not weather.proton.energy.is_nan():
+                proton.append({
+                    'time': time,
+                    'energy': float(weather.proton.energy),
+                    'flux': float(weather.proton.flux),
+                })
             unique_times.add(time)
 
     # future_predictions = forecasting.forecast_solar_wind(space_weather_data)
+    final_protons = {}
+    energy_counts = {}
+    for entry in proton:
+        energy = entry['energy']
+        energy_counts[energy] = energy_counts.get(energy, 0) + 1
+
+    # Select unique values that appear more than twice
+    selected_energy_levels = [energy for energy, count in energy_counts.items() if count > 2]
+
+    selected_protons = [{'time': entry['time'], 'energy': entry['energy'], 'flux': entry['flux']} for entry in
+                        proton if entry['energy'] in selected_energy_levels]
+
+    # Group data by 'energy' and prepare for JSON serialization
+    for energy_level in selected_energy_levels:
+        group = [{'time': entry['time'], 'flux': entry['flux']} for entry in selected_protons if
+                 entry['energy'] == energy_level]
+        group.sort(key=lambda x: x['time'])
+        print(f"Sorted group for {energy_level}: {group}")
+        final_protons[energy_level] = group
 
     return render(request, 'weather.html', {
-        'solar_wind_mag': json.dumps(solar_wind_mag_data),
+        'mag': json.dumps(mag_data),
+        'plasma': json.dumps(plasma),
+        'magnetometer': json.dumps(magnetometer),
+        'proton': final_protons,
         # 'future_predictions': future_predictions,
     })
 
@@ -150,4 +197,3 @@ def news_collection(request):
         'next_page': current_page_data.next_page_number, 'previous_page': current_page_data.previous_page_number,
         'current_page': current_page_data.number, 'total_page': current_page_data.paginator.num_pages,
     })
-

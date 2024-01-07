@@ -1,33 +1,18 @@
 <div>
-    <form id="dateFilterForm">
-        <label for="startDate">Start Date:</label>
-        <input type="date" id="startDate" name="startDate">
-
-        <label for="endDate">End Date:</label>
-        <input type="date" id="endDate" name="endDate">
-
-        <button type="button" onclick="updateChart()">Apply Filter</button>
-    </form>
     <!-- Initialize a select button -->
     <select id="selectButton"></select>
     <div id="magneticFieldChart"></div>
-    <svg id="demo2" width="200" height="200"></svg>
 </div>
 
 <script>
-    var solarWindMagData = {{ solar_wind_mag | safe }};
+    var solarWindMagData = {{ mag | safe }};
     var allKeys = Object.keys(solarWindMagData[0]).filter(key => key !== 'time');
-    var parseTime = d3.timeParse("%Y-%m-%dT%H:%M");
 
     solarWindMagData.forEach(function(d) {
       d.time = parseTime(d.time);
     });
 
     var dataFilter = solarWindMagData.map(d => ({ time: d.time, value: d["bx_gsm"] }));
-
-    const margin = {top: 10, right: 100, bottom: 30, left: 50},
-      width = 460 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
 
     var svg = d3.select("#magneticFieldChart")
       .append("svg")
@@ -92,7 +77,7 @@
       .attr("x", -margin.top * 6)
       .attr("y", -margin.left + 10)
       .attr("dy", "0.71em")
-      .text("Magnetic Field (bx_gsm)");
+      .text("Magnetic Field (nT)");
 
     const line = svg.append("g")
       .attr("clip-path", "url(#clip)")
@@ -170,7 +155,7 @@
       // Give these new data to update line
       yScale.domain(d3.extent(dataFilter, d => d.value));
       yAxis.call(d3.axisLeft(yScale));
-      yAxisTitle.text("Magnetic Field (" + selectedGroup + ")");
+      yAxisTitle.text("Magnetic Field (nT)");
 
       line.select(".line")
         .datum(dataFilter)

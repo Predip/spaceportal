@@ -1,27 +1,27 @@
 <div>
     <!-- Initialize a select button -->
-    <select id="selectButtonSolarWindPlasma"></select>
-    <div id="windPlasmaChart"></div>
+    <select id="selectButtonMagnetometer"></select>
+    <div id="magnetometerChart"></div>
 </div>
 
 <script>
-    var solarWindPlasmaData = {{ plasma | safe }};
-    var allKeys = Object.keys(solarWindPlasmaData[0]).filter(key => key !== 'time');
+    var magnetometerData = {{ magnetometer | safe }};
+    var allKeys = Object.keys(magnetometerData[0]).filter(key => key !== 'time');
 
-    solarWindPlasmaData.forEach(function(d) {
+    magnetometerData.forEach(function(d) {
       d.time = parseTime(d.time);
     });
 
-    var dataFilterSolarWindPlasma = solarWindPlasmaData.map(d => ({ time: d.time, value: d["density"] }));
+    var dataFilterMagnetometer = magnetometerData.map(d => ({ time: d.time, value: d["he"] }));
 
-    var svg = d3.select("#windPlasmaChart")
+    var svg = d3.select("#magnetometerChart")
       .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    d3.select("#selectButtonSolarWindPlasma")
+    d3.select("#selectButtonMagnetometer")
       .selectAll('myOptions')
       .data(allKeys)
       .enter()
@@ -29,13 +29,13 @@
       .text((d) => d) // text showed in the menu
       .attr("value", (d) => d);
 
-    const myColor2 = d3.scaleOrdinal()
+    const myColor4 = d3.scaleOrdinal()
       .domain(allKeys)
       .range(d3.schemeSet2);
 
     // Add a clipPath: everything out of this area won't be drawn.
-    const clip2 = svg.append("defs").append("svg:clipPath")
-      .attr("id", "clip2")
+    const clip4 = svg.append("defs").append("svg:clipPath")
+      .attr("id", "clip4")
       .append("svg:rect")
       .attr("width", width)
       .attr("height", height)
@@ -49,14 +49,14 @@
 
     // Append x-axis
     var xScale = d3.scaleTime()
-      .domain(d3.extent(dataFilterSolarWindPlasma, d => d.time))
+      .domain(d3.extent(dataFilterMagnetometer, d => d.time))
       .range([0, 500]);
 
-    const xAxisSolarWindPlasma = svg.append("g")
+    const xAxisMagnetometer = svg.append("g")
       .attr("transform", "translate(0, " + (300) + ")")
       .call(d3.axisBottom(xScale));
 
-    const xAxisSolarWindPlasmaTitle = svg.append("text")
+    const xAxisMagnetometerTitle = svg.append("text")
       .attr("x", (width / 2))
       .attr("y", height - margin.bottom * 2)
       .attr("dy", "2.5em")
@@ -65,44 +65,44 @@
 
     // Append y-axis
     var yScale = d3.scaleLinear()
-      .domain(d3.extent(dataFilterSolarWindPlasma, d => d.value))
+      .domain(d3.extent(dataFilterMagnetometer, d => d.value))
       .range([300, 0]);
 
-    const yAxisSolarWindPlasma = svg.append("g")
+    const yAxisMagnetometer = svg.append("g")
       .call(d3.axisLeft(yScale));
 
-    const yAxisSolarWindPlasmaTitle = svg.append("text")
+    const yAxisMagnetometerTitle = svg.append("text")
       .style("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .attr("x", -margin.top * 6)
       .attr("y", -margin.left + 10)
       .attr("dy", "0.71em")
-      .text("Values");
+      .text("Magnetic Field (nT)");
 
-    const lineSolarWindPlasma = svg.append("g")
-      .attr("clip-path", "url(#clip2)")
+    const lineMagnetometer = svg.append("g")
+      .attr("clip-path", "url(#clip4)")
 
-    lineSolarWindPlasma.append("path")
-      .datum(dataFilterSolarWindPlasma)
-      .attr("class", "lineSolarWindPlasma")
+    lineMagnetometer.append("path")
+      .datum(dataFilterMagnetometer)
+      .attr("class", "lineMagnetometer")
       .attr("d", d3.line()
         .x((d) => xScale(d.time))
         .y((d) => yScale(d.value)))
-      .attr("stroke", (d) => myColor2("density"))
+      .attr("stroke", (d) => myColor4("he"))
       .style("stroke-width", 4)
       .style("fill", "none");
 
     // Add the brushing
-    lineSolarWindPlasma
+    lineMagnetometer
       .append("g")
       .attr("class", "brush")
       .call(brush);
 
-    // A function that set idleTimeout2 to null
-    let idleTimeout2
+    // A function that set idleTimeout4 to null
+    let idleTimeout4
 
     function idled() {
-      idleTimeout2 = null;
+      idleTimeout4 = null;
     }
 
     // A function that update the chart for given boundaries
@@ -112,16 +112,16 @@
 
       // If no selection, back to initial coordinate. Otherwise, update X axis domain
       if (!extent) {
-        if (!idleTimeout2) return idleTimeout2 = setTimeout(idled, 350);
-        xScale.domain(d3.extent(dataFilterSolarWindPlasma, d => d.time));
+        if (!idleTimeout4) return idleTimeout4 = setTimeout(idled, 350);
+        xScale.domain(d3.extent(dataFilterMagnetometer, d => d.time));
       } else {
         xScale.domain([xScale.invert(extent[0]), xScale.invert(extent[1])])
-        lineSolarWindPlasma.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+        lineMagnetometer.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
       }
 
       // Update axis and line position
-      xAxisSolarWindPlasma.transition().duration(1000).call(d3.axisBottom(xScale))
-      lineSolarWindPlasma.select('.lineSolarWindPlasma')
+      xAxisMagnetometer.transition().duration(1000).call(d3.axisBottom(xScale))
+      lineMagnetometer.select('.lineMagnetometer')
         .transition()
         .duration(1000)
         .attr("d", d3.line()
@@ -132,10 +132,10 @@
 
     // If user double click, reinitialize the chart
     svg.on("dblclick", function() {
-      xScale.domain(d3.extent(dataFilterSolarWindPlasma, (d) => d.time))
-      xAxisSolarWindPlasma.transition().call(d3.axisBottom(xScale))
-      lineSolarWindPlasma
-        .select('.lineSolarWindPlasma')
+      xScale.domain(d3.extent(dataFilterMagnetometer, (d) => d.time))
+      xAxisMagnetometer.transition().call(d3.axisBottom(xScale))
+      lineMagnetometer
+        .select('.lineMagnetometer')
         .transition()
         .attr("d", d3.line()
           .x((d) => xScale(d.time))
@@ -144,8 +144,8 @@
     });
 
 
-    function changeGraphSolarWindPlasma(selectedGroup) {
-      dataFilterSolarWindPlasma = solarWindPlasmaData.map(function(d) {
+    function changeGraphMagnetometer(selectedGroup) {
+      dataFilterMagnetometer = magnetometerData.map(function(d) {
         return {
           time: d.time,
           value: d[selectedGroup]
@@ -153,22 +153,22 @@
       })
 
       // Give these new data to update line
-      yScale.domain(d3.extent(dataFilterSolarWindPlasma, d => d.value));
-      yAxisSolarWindPlasma.call(d3.axisLeft(yScale));
-      yAxisSolarWindPlasmaTitle.text("Values");
+      yScale.domain(d3.extent(dataFilterMagnetometer, d => d.value));
+      yAxisMagnetometer.call(d3.axisLeft(yScale));
+      yAxisMagnetometerTitle.text("Magnetic Field (nT)");
 
-      lineSolarWindPlasma.select(".lineSolarWindPlasma")
-        .datum(dataFilterSolarWindPlasma)
+      lineMagnetometer.select(".lineMagnetometer")
+        .datum(dataFilterMagnetometer)
         .transition()
         .duration(1000)
         .attr("d", d3.line()
           .x((d) => xScale(+d.time))
           .y((d) => yScale(+d.value)))
-        .attr("stroke", (d) => myColor2(selectedGroup))
+        .attr("stroke", (d) => myColor4(selectedGroup))
     }
 
-    d3.select("#selectButtonSolarWindPlasma").on("change", function(event, d) {
+    d3.select("#selectButtonMagnetometer").on("change", function(event, d) {
       const selectedOption = d3.select(this).property("value")
-      changeGraphSolarWindPlasma(selectedOption)
+      changeGraphMagnetometer(selectedOption)
     })
 </script>
