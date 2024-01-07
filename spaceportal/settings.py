@@ -77,27 +77,27 @@ DATABASES = {
     },
     'neo': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',  # '192.168.1.26',
+        'HOST': 'neo-db.cfoyuqi6aqjl.us-east-1.rds.amazonaws.com',
         'USER': 'postgres',
-        'PASSWORD': 'andrea',
+        'PASSWORD': 'neo123neo',
         'NAME': 'neo_db',
-        'PORT': 5433,
+        'PORT': 5432,
     },
     'news': {
          'ENGINE': 'django.db.backends.postgresql',
-         'HOST': 'localhost',  # '192.168.1.26',
-         'NAME': 'news_db',
-         'USER': 'postgres',
-         'PASSWORD': 'andrea',
+         'HOST': 'dbspacenews.ctuiek4kywxq.us-east-1.rds.amazonaws.com',
+         'NAME': 'dbspacenews',
+         'USER': 'dbspacenews',
+         'PASSWORD': '987654321',
          'PORT': 5432,
      },
     'weather': {
         'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'localhost',  # '192.168.1.26',
+        'HOST': 'weather-db.czciea04ss13.us-east-1.rds.amazonaws.com',
         'USER': 'postgres',
-        'PASSWORD': 'andrea',
+        'PASSWORD': 'weather123',
         'NAME': 'weather_db',
-        'PORT': 5433,
+        'PORT': 5432,
     }
 }
 
