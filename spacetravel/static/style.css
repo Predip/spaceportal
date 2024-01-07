@@ -46,6 +46,11 @@ h1 {
     left: 0;
 }
 
+/* Weather */
+.weather {
+    background-color: rgba(248,248,255,0.75);
+}
+
 /* Wordcloud */
 #wordcloud {
     background: white;
@@ -139,6 +144,38 @@ h1 {
 
 .tile a {
     text-decoration: none;
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.step-links {
+    display: flex;
+    align-items: center;
+}
+
+.step-links a {
+    color: #007BFF;
+    text-decoration: none;
+    padding: 8px;
+    margin: 0 5px;
+    border: 1px solid #007BFF;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.step-links a:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+.current {
+    margin: 0 10px;
+    font-weight: bold;
 }
 
 /* Filter */

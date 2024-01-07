@@ -1,8 +1,9 @@
 import json
 from .functions.neo.orbit_position import calculate_current_orbit, get_closest_approach
-from .functions.news.wordcloud_generator import WordCloudGenerator
+from .functions.news.wordcloud_generator import get_wordcloud_data
 # from .functions.weather import forecasting
-from .models import Asteroid, NeoSheet, WeatherSheet
+from .models import Asteroid, NeoSheet, WeatherSheet, NewsSheet
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import F, Q
 from django.shortcuts import render
 
@@ -115,6 +116,38 @@ def weather_info(request):
 
 
 def news_collection(request):
-    news_data, news_data_word = WordCloudGenerator().process_news()
-    return render(request, 'news.html', {'news_data': news_data, 'news_data_word': news_data_word})
+    news_dataset = NewsSheet.objects.using('news').order_by('time_id').all()
+    paginator = Paginator(news_dataset, 10)
+    page = request.GET.get('page', 1)
+
+    try:
+        current_page_data = paginator.page(page)
+    except (PageNotAnInteger, EmptyPage):
+        current_page_data = paginator.page(1)
+
+    news_data = []
+
+    for news in current_page_data:
+        time = str(news.time_id.year) + '-' + str(news.time_id.month).zfill(2) + '-' + str(news.time_id.day).zfill(2) \
+               + 'T' + str(news.time_id.hour).zfill(2) + ':' + str(news.time_id.minute).zfill(2)
+
+        news_data.append({
+            'title': news.news_id.title,
+            'summary': news.news_id.summary,
+            'category': news.category_id.category_name,
+            'news_site': news.source_id.source_name,
+            'sentiment': float(news.sentiment_id.score),
+            'time': time,
+            'url': news.news_id.url,
+            'img_url': news.news_id.img_url,
+        })
+
+    news_data_word = get_wordcloud_data(news_dataset)
+
+    return render(request, 'news.html', {
+        'news_data': json.dumps(news_data), 'news_data_word': news_data_word,
+        'has_next': current_page_data.has_next(), 'has_previous': current_page_data.has_previous(),
+        'next_page': current_page_data.next_page_number, 'previous_page': current_page_data.previous_page_number,
+        'current_page': current_page_data.number, 'total_page': current_page_data.paginator.num_pages,
+    })
 
