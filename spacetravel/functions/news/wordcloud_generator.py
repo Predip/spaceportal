@@ -1,6 +1,7 @@
-import nltk
 import re
 from collections import Counter
+
+import nltk
 from django.core.cache import cache
 from nltk.corpus import stopwords
 
@@ -42,7 +43,10 @@ def get_wordcloud_data(data=None):
     word_counts = Counter(filtered_words)
 
     # Convert Counter to a list of dictionaries with 'text' and 'size' keys
-    words = [{'text': word, 'size': count / 100} for word, count in word_counts.items() if count > 100]
+    max_count = max(word_counts.values())
+    min_count = min(word_counts.values())
+    words = [{'text': word, 'size': ((count - min_count) / (max_count - min_count)) * 50}
+             for word, count in word_counts.items() if count > 0]
 
     # Sort the list based on word frequencies (size) in descending order
     words.sort(key=lambda x: x['size'], reverse=True)

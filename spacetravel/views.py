@@ -1,14 +1,15 @@
 import json
-from datetime import datetime
-
-from .functions.neo.orbit_position import calculate_current_orbit, get_closest_approach
-from .functions.news.wordcloud_generator import get_wordcloud_data
 # from .functions.weather import forecasting
 from collections import defaultdict
-from .models import Asteroid, NeoSheet, WeatherSheet, NewsSheet
+from datetime import datetime
+
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import F, Q
 from django.shortcuts import render
+
+from .functions.neo.orbit_position import calculate_current_orbit, get_closest_approach
+from .functions.news.wordcloud_generator import get_wordcloud_data
+from .models import Asteroid, NeoSheet, WeatherSheet, NewsSheet
 
 
 def format_time(time):
@@ -97,14 +98,14 @@ def asteroids_explorer(request):
 
 
 def weather_info(request):
-    weather_dataset = WeatherSheet.objects.using('weather')\
+    weather_dataset = WeatherSheet.objects.using('weather') \
         .select_related('time', 'mag', 'plasma', 'magnetometer', 'proton').values(
-            'time__year', 'time__month', 'time__day', 'time__hour', 'time__minute',
-            'mag__bx_gsm', 'mag__by_gsm', 'mag__bz_gsm',
-            'plasma__density', 'plasma__speed',
-            'magnetometer__he', 'magnetometer__hp', 'magnetometer__hn', 'magnetometer__total',
-            'proton__energy', 'proton__flux'
-        )
+        'time__year', 'time__month', 'time__day', 'time__hour', 'time__minute',
+        'mag__bx_gsm', 'mag__by_gsm', 'mag__bz_gsm',
+        'plasma__density', 'plasma__speed',
+        'magnetometer__he', 'magnetometer__hp', 'magnetometer__hn', 'magnetometer__total',
+        'proton__energy', 'proton__flux'
+    )
     unique_times = set()
     mag_data = []
     plasma_data = []

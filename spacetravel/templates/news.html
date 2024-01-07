@@ -3,16 +3,17 @@
 {% block title %}News{% endblock %}
 
 {% block content %}
-    <h1>News</h1>
-    <script>
+<h1>News</h1>
+<script>
         var newsData = {{ news_data|default:"null"|safe }};
         var wordData = {{ news_data_word|safe }};
-    </script>
-    <svg id="wordcloud"></svg>
 
-    <!-- Tiles -->
-    <div id="tileContainer"></div>
-    <div class="pagination">
+</script>
+<svg id="wordcloud"></svg>
+
+<!-- Tiles -->
+<div id="tileContainer"></div>
+<div class="pagination">
         <span class="step-links">
             {% if has_previous %}
                 <a href="?page=1">&laquo; first</a>
@@ -28,9 +29,9 @@
                 <a href="?page={{ total_page }}">last &raquo;</a>
             {% endif %}
         </span>
-    </div>
+</div>
 {% endblock %}
 
 {% block scripBlock %}
-     <script src="../static/news.js"></script>
+<script src="../static/news.js"></script>
 {% endblock %}

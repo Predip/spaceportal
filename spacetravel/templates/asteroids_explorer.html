@@ -3,52 +3,53 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-    <h1>Asteroids explorer</h1>
-    <button id="openFilter" onclick="openFilter()">Open Filters</button>
-    <div id="filterFormContainer">
-        <form id="filterForm" method="get" action="{% url 'asteroids_explorer' %}" style="display: none;">
-            <section>
-                <label for="is_potentially_hazardous">Potentially Hazardous:</label>
-                <div class="switch">
-                    <input type="checkbox" name="is_potentially_hazardous" id="is_potentially_hazardous" value="true" />
-                    <span>
+<h1>Asteroids explorer</h1>
+<button id="openFilter" onclick="openFilter()">Open Filters</button>
+<div id="filterFormContainer">
+    <form action="{% url 'asteroids_explorer' %}" id="filterForm" method="get" style="display: none;">
+        <section>
+            <label for="is_potentially_hazardous">Potentially Hazardous:</label>
+            <div class="switch">
+                <input id="is_potentially_hazardous" name="is_potentially_hazardous" type="checkbox" value="true"/>
+                <span>
                         <span>False</span>
                         <span>True</span>
                     </span>
-                    <a></a>
-                </div>
-            </section>
+                <a></a>
+            </div>
+        </section>
 
-            <section>
-                <label for="is_sentry_object">Sentry Object:</label>
-                <div class="switch">
-                    <input type="checkbox" name="is_sentry_object" id="is_sentry_object" value="true" />
-                    <span>
+        <section>
+            <label for="is_sentry_object">Sentry Object:</label>
+            <div class="switch">
+                <input id="is_sentry_object" name="is_sentry_object" type="checkbox" value="true"/>
+                <span>
                         <span>False</span>
                         <span>True</span>
                     </span>
-                    <a></a>
-                </div>
-            </section>
+                <a></a>
+            </div>
+        </section>
 
-            <!-- Add other filters as needed -->
+        <!-- Add other filters as needed -->
 
-            <button type="submit" class="btn">Apply Filters</button>
-            <button type="button" class="btn cancel" onclick="closeFilter()">Close</button>
-        </form>
-    </div>
-    <div id="sceneContainer">
-        <script type="module">
+        <button class="btn" type="submit">Apply Filters</button>
+        <button class="btn cancel" onclick="closeFilter()" type="button">Close</button>
+    </form>
+</div>
+<div id="sceneContainer">
+    <script type="module">
             import { importAsteroidModule } from '../static/asteroid.js';
             var asteroidsData = {{ asteroids|default:"null"|safe }};
             var factor = {{ factor|default:10000000|safe }};
             importAsteroidModule(asteroidsData, factor);
-        </script>
-    </div>
+
+    </script>
+</div>
 {% endblock %}
 
 {% block scripBlock %}
-    <script>
+<script>
         function openFilter() {
             document.getElementById("filterForm").style.display = "block";
             document.getElementById("openFilter").style.display = "none";
@@ -77,6 +78,7 @@
                 document.getElementById('is_sentry_object').checked = false;
             }
         });
-    </script>
-    <script type="module" src="../static/asteroid.js"></script>
+
+</script>
+<script src="../static/asteroid.js" type="module"></script>
 {% endblock %}

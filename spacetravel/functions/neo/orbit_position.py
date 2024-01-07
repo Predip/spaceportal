@@ -1,8 +1,9 @@
+import astropy.units as u
 from astropy.time import Time
 from poliastro.bodies import Earth
 from poliastro.twobody import Orbit
+
 from spacetravel.models.neo import NeoSheet
-import astropy.units as u
 
 
 def calculate_current_orbit(neo_data):
